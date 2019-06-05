@@ -33,6 +33,17 @@ const create = (context) => {
     }
   };
 
+  const removeFromGlobals = (ident) => {
+    // start from the right since we're going to remove items from the array
+    for (let ii = globalScope.through.length - 1; ii >= 0; ii--) {
+      const ref = globalScope.through[ii];
+
+      if (ref.identifier === ident) {
+        globalScope.through.splice(ii, 1);
+      }
+    }
+  };
+
   return {
     ClassImplements (node) {
       makeDefined(node.id);
@@ -50,9 +61,10 @@ const create = (context) => {
         let qid;
 
         qid = node.id;
-        do {
+        while (qid.qualification) {
+          removeFromGlobals(qid.id);
           qid = qid.qualification;
-        } while (qid.qualification);
+        }
 
         makeDefined(qid);
       }
