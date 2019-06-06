@@ -76,6 +76,16 @@ const create = (context) => {
         makeDefined(node.id);
       }
     },
+    FunctionTypeParam(node) {
+      if (node.name) {
+        removeFromGlobals(node.name);
+      }
+    },
+    ObjectTypeIndexer(node) {
+      if (node.id) {
+        removeFromGlobals(node.id);
+      }
+    },
     Program () {
       globalScope = context.getScope();
     },
